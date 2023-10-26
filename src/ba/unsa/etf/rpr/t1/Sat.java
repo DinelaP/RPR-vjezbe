@@ -10,8 +10,9 @@ public class Sat {
     public void postavi(int sati, int minute, int sek){
         this.sati=sati;
         this.minute=minute;
-        this.sek=sek;}
-        public  void sljedeci(){
+        this.sek=sek;
+    }
+    public  void sljedeci(){
         this.sek++;
         if(this.sek==60){
             this.sek=0;
