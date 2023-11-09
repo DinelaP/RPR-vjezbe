@@ -1,63 +1,36 @@
-package ba.unsa.etf.rpr.lv3;
+package ba.unsa.etf.rpr.z1;
+import ba.unsa.etf.rpr.z1.*;
+import org.junit.jupiter.api.beforall;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MockingTest {
+    private static Imenik imenik=new Imenik;
 
-    private static Imenik imenik=new Imenik();
+    public static void setup(){
+        imenik.dodaj("John", new MedunarodniBroj("+1", "23 45-67-89"));
+        imenik.dodaj("Hana", new FiksniBroj(Grad.SARAJEVO, "123-156"));
+        imenik.dodaj("Meho", new FiksniBroj(Grad.SARAJEVO, "123-456"));
 
-    public static void pocetniPodaci(){
-
-        try {
-            imenik.dodaj("Elma", new FiksniBroj(Grad.SARAJEVO, "123-123"));
-            imenik.dodaj("Dinela", new FiksniBroj(Grad.TRAVNIK, "234-234"));
-            imenik.dodaj("Emina", new MobilniBroj(62, "345-185"));
-            imenik.dodaj("Mark", new MedjunarodniBroj("+1", "6179514418"));
-        }
-        catch(Exception e){
-            System.err.println(e.getMessage());
-        }
-    }
-    @Test
-    void testSaMapom() {
-        Map<String, String> mockMap = Mockito.mock(Map.class);
-        when(mockMap.get("Emina")).thenReturn("062/444-555");
-
-        assertEquals("062/444-555", mockMap.get("Emina"));
     }
 
-    @Test
-    void testImenika(){
-        Imenik i= Mockito.mock(Imenik.class);
-        Mockito.when(i.naSlovo('k')).thenReturn("Nema osoba");
+    public void testMockExternal(){
+        Imenik i=Mockito.mock(Imenik.class);
+        Mockito.when(i.dajBroj("Hana")).thenReturn("Nema nista");
+        String test=i.dajBroj("Hana");
 
-        String poruka=i.naSlovo('k');
-        assertEquals(poruka,"Nema osoba");
     }
 
-    @Test
-    void testSaBaznomIzvedenomKlasom() {
-        BaznaKlasa bazna = mock(BaznaKlasa.class);
-        IzvedenaKlasa izvedena = new IzvedenaKlasa();
-        when(bazna.metoda()).thenReturn("Pozdrav");
+    public void testMockInternal(){
+        Map<String, TelefonskiBroj> mapa=Mockito.mock(Map.class);
+        Mockito.when(mapa.get("Hana")).thenReturn(new FiksniBroj(Grad.MOSTAR, "333-444"));
+        imenik.setBrojevi(mapa);
 
-        assertEquals("Pozdrav", izvedena.testirajMetoduBazneKlase(bazna));
+        String br=imenik.dajBroj("Hana");
+
+
     }
 
-    private static class BaznaKlasa {
-        String metoda() {
-            return "Osnovna metoda";
-        }
-    }
-
-    private static class IzvedenaKlasa {
-        String testirajMetoduBazneKlase(BaznaKlasa bazna) {
-            return bazna.metoda();
-        }
-    }
 }
